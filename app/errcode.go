@@ -7,12 +7,10 @@ const (
 )
 
 const (
-	ErrForm = iota + 2001
-	ErrNotFound
-	ErrDataExist
-	ErrParamUnknown
-	ErrOpBusy
-	ErrValueOutOfRange
+	ErrForm         = iota + 2001
+	ErrNotFound     // 数据不存在
+	ErrDataExist    // 数据已存在
+	ErrParamUnknown // 参数类型错误
 )
 
 const (
@@ -70,58 +68,4 @@ var ErrInfo = map[int]string{
 	ErrForbidden:    "Forbidden",             // 403
 	ErrServerFailed: "Server internal error", // 500
 
-	ErrForm:              "form validation error",
-	ErrDataExist:         "data already exists",
-	ErrNotFound:          "not Found",
-	ErrParamUnknown:      "unknown parameter",
-	ErrOpBusy:            "frequent operation",
-	ErrValueOutOfRange:   "the data length or size exceeds the limit",
-	ErrRpcConnect:        "RPC connection failed",
-	ErrTransactionFailed: "transaction failed",
-
-	ErrUserNameExist:       "username already exists",
-	ErrUserEmailExist:      "email already exists",
-	ErrUserPwd:             "wrong user name or password",
-	ErrUserPwdUnMatch:      "the two passwords do not match",
-	ErrUserPwdNotChange:    "the old and new passwords are the same",
-	ErrUser404:             "user does not exist",
-	ErrFollow:              "follow failure",
-	ErrFollowed:            "followed",
-	ErrFollowedNo:          "not following",
-	ErrEmailSend:           "Email sending failed",
-	ErrEmailInvalid:        "Email verification code check failed",
-	ErrCollectionNameExit:  "Collection name already exists",
-	ErrAddressInvalid:      "Address verification failed",
-	ErrAccountInsufficient: "Insufficient balance",
-
-	ErrUserAddressExist: "Wallet address is bound",
-	ErrAddressNotBound:  "Wallet not bound",
-	ErrSignatureInvalid: "Signature verification failed",
-
-	ErrNftBalances:   "Insufficient account balance",
-	ErrUserMSGClosed: "User has closed MSG",
-	ErrNftCreate:     "NFT create failed",
-
-	ErrOrderMyself:           "Can't buy own order",
-	ErrOrderBuild:            "Order build failed",
-	ErrOrderFinishOrCanceled: "Order completed or cancelled",
-
-	ErrFileFile: "File storage failed",
-	ErrFileType: "file type not allowed",
-	ErrFileSize: "file size exceeds limit",
-
-	ErrDB:       "Data operation failed",
-	ErrDBRead:   "Data read failed",
-	ErrDBWrite:  "Data write failed",
-	ErrDBUpdate: "Data update failed",
-	ErrDBDelete: "Data deletion failed",
-
-	ErrWsMsgSend: "Failed to send message",
-	ErrWsMsgFmt:  "Message format error",
-	ErrWsMsg500:  "Service exception",
-	ErrWsToken:   "Invalid or not found",
-	ErrWsAuth:    "Authentication failed",
-	ErrWsMsgType: "Incorrect message type",
-
-	ErrParamInvalid: "Invalid parameter",
 }

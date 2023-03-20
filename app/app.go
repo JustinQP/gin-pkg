@@ -1,7 +1,6 @@
 package app
 
 import (
-	"encoding/json"
 	"fmt"
 	"net/http"
 )
@@ -130,42 +129,4 @@ func RespOKCode(code int, message string) (int, Response) {
 		Message: message,
 	}
 	return http.StatusOK, resp
-}
-
-func JsonOkResp(data interface{}) string {
-
-	if data == nil {
-		data = "operate successfully!"
-	}
-
-	resp := Response{
-		Status: 200,
-		Data:   data,
-	}
-
-	bytesResp, err := json.Marshal(resp)
-	if err != nil {
-		resp = Response{Status: 500, Message: "Server Error"}
-	}
-	return string(bytesResp)
-}
-
-func JsonErrResp(code int, message string) string {
-	if message == "" {
-		message = ErrInfo[code]
-	}
-
-	if code == 0 {
-		code = 400
-	}
-	resp := Response{
-		Status:  code,
-		Message: message,
-	}
-
-	bytesResp, err := json.Marshal(resp)
-	if err != nil {
-		resp = Response{Status: 500, Message: "Server Error"}
-	}
-	return string(bytesResp)
 }
