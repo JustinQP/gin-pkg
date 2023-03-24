@@ -3,6 +3,8 @@ package app
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/sirupsen/logrus"
 )
 
 type Response struct {
@@ -19,13 +21,14 @@ func Text(code int) string {
 func RespErr(code int, data interface{}) (int, Response) {
 	emsg := Text(code)
 
+	logrus.Error(data)
+
 	var message string
 	switch v := data.(type) {
 	case string:
 		message = v
 	case error:
 		message = v.Error()
-		fmt.Printf("%+v\n", v)
 		if emsg != "" {
 			message = fmt.Sprintf("%s: %s", emsg, message)
 		}
@@ -33,7 +36,6 @@ func RespErr(code int, data interface{}) (int, Response) {
 		message = fmt.Sprintln(v)
 	}
 
-	// 为空填充信息
 	if message == "" {
 		message = emsg
 	}
@@ -43,21 +45,8 @@ func RespErr(code int, data interface{}) (int, Response) {
 		Message: message,
 	}
 
-	return http.StatusBadRequest, resp
+	return http.StatusOK, resp
 }
-
-// func RespErr(code int, message string) (int, Response) {
-// 	if message == "" {
-// 		message = ErrInfo[code]
-// 	}
-
-// 	resp := Response{
-// 		Status:  code,
-// 		Message: message,
-// 	}
-
-// 	return http.StatusBadRequest, resp
-// }
 
 func Resp400(code int) (int, Response) {
 	message, isOK := ErrInfo[code]

@@ -3,18 +3,19 @@ package ethrpc
 import (
 	"context"
 	"crypto/ecdsa"
-	"errors"
 	"fmt"
 	"math/big"
 	"os"
 	"strconv"
 	"time"
 
+	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/accounts/abi"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/ethclient"
+	"github.com/pkg/errors"
 )
 
 type Web3RPC struct {
@@ -40,7 +41,7 @@ func init() {
 	if chainId := os.Getenv("GIN_CHAIN_ID"); chainId != "" {
 		CHAIN_ID, _ = strconv.ParseInt(chainId, 10, 64)
 	} else {
-		CHAIN_ID = 123321
+		CHAIN_ID = 1
 	}
 }
 
@@ -84,14 +85,11 @@ func (t *Web3RPC) GetPendingTx(txHash string) (*types.Receipt, error) {
 	for i := 0; i < 10; i++ {
 		tx, isPending, err := t.Client.TransactionByHash(context.Background(), common.HexToHash(txHash))
 		if err != nil {
-			time.Sleep(BLOCK_GAP * time.Second)
-			tx, isPending, err = t.Client.TransactionByHash(context.Background(), common.HexToHash(txHash))
-			if err != nil {
+			if errors.Is(err, ethereum.NotFound) {
 				time.Sleep(BLOCK_GAP * time.Second)
-				tx, isPending, err = t.Client.TransactionByHash(context.Background(), common.HexToHash(txHash))
-				if err != nil {
-					return nil, err
-				}
+				continue
+			} else {
+				return nil, errors.Wrap(err, txHash)
 			}
 		}
 
@@ -106,12 +104,12 @@ func (t *Web3RPC) GetPendingTx(txHash string) (*types.Receipt, error) {
 		}
 
 		if receipt.Status == TX_FAULT {
-			return nil, errors.New("tx failed")
+			return nil, fmt.Errorf("tx fault, txHash:%s", txHash)
 		}
 
 		return receipt, nil
 
 	}
 
-	return nil, errors.New("tx not found")
+	return nil, fmt.Errorf("tx not found, txHash:%s", txHash)
 }
